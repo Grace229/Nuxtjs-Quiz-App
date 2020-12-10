@@ -11,12 +11,10 @@
 
 <script>
 import Rule from '~/components/Rule.vue'
-// import VuetifyLogo from '~/components/VuetifyLogo.vue'
-
 export default {
   components: {
     Rule,
-    // VuetifyLogo
+    
   }
 }
 </script>

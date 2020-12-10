@@ -1,57 +1,63 @@
 <template>
   <v-row justify="center" align="center">
-    <v-col cols="12" sm="8" md="6">
-        <v-card>
-          <v-card-title class="headline">
-            {{ question.question }}
-          </v-card-title>
-          <v-card-text>
-            <v-card class="mx-auto" max-width="500">
-              <v-list shaped>
-                <v-list-item-group>
-                  <template>
-                    <v-list-item
-                      :value="question.question"
-                      active-class="success"
-                    >
-                      <template v-slot:default="{ active }">
-                        <v-list-item-content  v-for="opt in question.options" :key="opt">
-                          <v-list-item-title>
-                            {{ opt }}
-                          </v-list-item-title>
+    <v-card>
+      <v-card-title class="headline">
+        {{ question.question }}
+      </v-card-title>
+      <v-card-text>
+        <v-card class="mx-auto">
+          <v-list shaped>
+            <v-list-item-group>
+              <template>
+                <v-list-item
+                  :value="opt"
+                  active-class="success"
+                  v-for="(opt, i) in question.options"
+                  :key="`opt-${i}`"
+                >
+                  <template v-slot:default="{ active }">
+                    <v-list-item-content>
+                      <v-list-item-title>
+                        {{ opt }}
+                      </v-list-item-title>
+                    </v-list-item-content>
 
-                        <!-- <v-list-item-action> -->
-                          <v-checkbox
-                            :input-value="active"
-                            color="success"
-                          ></v-checkbox>
-                        </v-list-item-content>
-                        <!-- </v-list-item-action> -->
-                      </template>
-                    </v-list-item>
+                    <v-checkbox
+                      :input-value="active"
+                      color="success"
+                      @click="selectOption(opt)"
+                    ></v-checkbox>
                   </template>
-                </v-list-item-group>
-              </v-list>
-            </v-card>
-          </v-card-text>
+                </v-list-item>
+              </template>
+            </v-list-item-group>
+          </v-list>
         </v-card>
-    </v-col>
+      </v-card-text>
+    </v-card>
   </v-row>
 </template>
 
 <script>
 export default {
-  data: () => ({
-    arrays: [],
-  }),
-  mounted () {
-    console.log('rubbuish', this.question)
+  data: () => ({}),
+  mounted() {
+    console.log('rubbuish', this.question.options)
   },
   props: {
     question: {
       type: Object,
-      default: () => {}
-    }
+      default: () => {},
+    },
   },
+  methods: {
+    selectOption (value) {
+     const correct =  value === this.question.correct_answer 
+      if (correct) {
+        this.$emit('correctAnswer')
+        console.log(correct)
+      }
+    }
+  }
 }
 </script>
