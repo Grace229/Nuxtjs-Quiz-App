@@ -3,24 +3,37 @@
     <v-col cols="12" sm="8">
       <div class="text-center"></div>
       <div>
-
-        {{indexOfQuestion}}/{{ questionsFromApiFormatted.length }}
+        {{ indexOfQuestion }}/{{ questionsFromApiFormatted.length }}
         <v-spacer></v-spacer>
-        {{ score }}
       </div>
 
-      <Question :question="questionToDisplay" v-on:correctAnswer="addScore"/>
+      <Question
+        :question="questionToDisplay"
+        v-on:optionSelectEmit="addScore"
+      />
       <v-card>
         <v-card-actions>
-          <v-btn v-if="indexOfQuestion !== questionsFromApiFormatted.length"  color="primary" nuxt @click="nextQuestion"> Next </v-btn>
-          <divider/>
-          <v-btn v-if="indexOfQuestion === questionsFromApiFormatted.length" to="/score" color="success" nuxt @click="submit">Submit </v-btn>
+          <v-btn
+            v-if="indexOfQuestion !== questionsFromApiFormatted.length - 1"
+            color="primary"
+            nuxt
+            @click="nextQuestion"
+          >
+            Next
+          </v-btn>
+          <divider />
+          <v-btn
+            v-if="indexOfQuestion === questionsFromApiFormatted.length - 1"
+            color="success"
+            nuxt
+            @click="submitTest"
+            >Submit
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-col>
   </v-row>
 </template>
-  
 
 <script>
 import Question from '../components/Question'
@@ -31,6 +44,7 @@ export default {
   },
   data: () => ({
     score: 0,
+    optionSelect: {},
     questionsFromApiFormatted: [],
     questionToDisplay: {},
     indexOfQuestion: 0,
@@ -38,7 +52,7 @@ export default {
   async fetch() {
     try {
       let response = await this.$axios.$get(
-        `https://opentdb.com/api.php?amount=20&$category=${this.$route.query.category}&type=multiple`
+        `https://opentdb.com/api.php?amount=2&$category=${this.$route.query.category}&type=multiple`
       )
       this.questionsFromApiFormatted = response.results.map((item) => {
         const arrayOfOptions = [...item.incorrect_answers, item.correct_answer]
@@ -62,8 +76,11 @@ export default {
     },
   },
   methods: {
-    addScore () {
-      this.score++
+    submitTest() {
+this.$router.push({ name: "Score", params: {score: this.score}})
+    },
+    addScore(value) {
+      this.optionSelect = value
     },
     mixOptions(array) {
       var currentIndex = array.length,
@@ -83,14 +100,15 @@ export default {
       return array
     },
     nextQuestion() {
-    
-        this.questionToDisplay = this.questionsFromApiFormatted[
-          this.indexOfQuestion++
-        ]
-        console.log(this.questionToDisplay)
-      },
-    
- 
+      if (
+        this.optionSelect.selectedAnswer === this.optionSelect.correctAnswer
+      ) {
+        ++this.score
+      }
+      this.questionToDisplay = this.questionsFromApiFormatted[
+        ++this.indexOfQuestion
+      ]
+    },
   },
 }
 </script>

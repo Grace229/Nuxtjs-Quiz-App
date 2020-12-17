@@ -2,7 +2,8 @@
   <v-row justify="center" align="center">
     <v-card>
       <v-card-title class="headline">
-        {{ question.question }}
+        <div v-html="question.question">
+        </div>
       </v-card-title>
       <v-card-text>
         <v-card class="mx-auto">
@@ -52,11 +53,11 @@ export default {
   },
   methods: {
     selectOption (value) {
-     const correct =  value === this.question.correct_answer 
-      if (correct) {
-        this.$emit('correctAnswer')
-        console.log(correct)
-      }
+     const optionSelect =  {
+       selectedAnswer: value,
+       correctAnswer: this.question.correct_answer 
+     }
+      this.$emit('optionSelectEmit', optionSelect)
     }
   }
 }

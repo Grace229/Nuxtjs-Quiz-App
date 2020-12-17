@@ -1,5 +1,9 @@
 <template>
     <div>
-       <p>HELLO</p> 
+       <p>{{ $route.params.score }}</p> 
     </div>
 </template>
+<script>
+export default {
+}
+</script>
